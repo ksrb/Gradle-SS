@@ -1,0 +1,16 @@
+#Idea
+/.idea
+*.iml
+
+#Eclipse
+.classpath
+.project
+/.settings
+
+#Gradle
+.gradle
+
+#Production
+/out
+/bin
+build
