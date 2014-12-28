@@ -1,0 +1,219 @@
+task printInstances {
+    description "Attempt to find out what the class instance Gradle DSL entities actually map to"
+} << {
+    //Thought this would be a instance of Gradle project however it comes out be something like build_(some hash?)
+    println this.class
+}
+
+//Defines additional properties on the project instance (which is pretty much the 'this')
+ext {
+    hiThere = "Hi there"
+    myVersion = "Playground ext{}"
+    version = "Playground ext{}"
+}
+
+task displayExtProperties {
+    description "Displays user defined properties"
+} << {
+    println "hiThere $project.hiThere"
+    println "myVersion $project.myVersion"
+    //Not sure why this isn't defined perhaps it's reserved somehow?
+    println "version: $project.version"
+}
+
+//Define version variable on Groovy scope?
+def version = "Playground"
+/*
+ * There is a difference between defining a 'Gradle' property
+ * using 'project.ext'/'ext{}' and defining a variable using 'def'
+ */
+
+//Suddenly naming this task as 'version' no longer works
+task printVersionTest {
+    group "Questionable"
+    description "Print version"
+} << {
+    println version
+    //Not sure why this isn't working
+    println project.version
+    //But this is, is 'version' overridden or reserved somehow
+    println project.myVersion
+}
+
+task loggerTest {
+    group "Broken"
+} << {
+    //Doesn't work book uses Gradle 1.7 with Groovy 1.8.6
+    //I'm on Gradle 2.2.1 with Groovy 2.3.6, could be a small versioning error
+    /*
+     * To be quite frank the error doesn't make much sense it's saying the quite
+     * method doesn't accept a String and then says that the variable passed to the method is a string -_-
+     */
+    logger.quite version
+}
+
+
+task first << {
+    def str = "";
+    for (int i = 0; i < 10000; i++) {
+        str += " " + i;
+    }
+    println "First $str"
+}
+
+task second << {
+    println "Second"
+}
+
+/*
+ * Dependent task have to be defined before hand
+ * Unless I'm doing it incorrectly getting Gradle to build in parallel doesn't seem to work in this test
+ * Rather 'first' always executes before 'second', it seems that be defaults to running task in alphabetical order
+ */
+task parallelTest {
+    group "Questionable"
+    dependsOn first, second
+}
+
+task finalizationTest {
+    finalizedBy second
+}
+
+class Version {
+    int major, minor
+    boolean playground, release
+
+    Version(boolean playground, int major, int minor, boolean release) {
+        this.playground = playground
+        this.major = major
+        this.minor = minor
+        this.release = release
+    }
+
+    Version(int major, int minor) {
+        this(false, major, minor, false)
+    }
+
+    @Override
+    String toString() {
+        "${playground ? 'Playground' : ''} $major.$minor${release ? '' : '-SNAPSHOT'}"
+    }
+}
+
+//Read version.properties file
+Version loadVersionFile() {
+    logger.quiet 'Reading the version file.'
+    if (!versionFile.exists()) {
+        throw new GradleException("Required version file does not exist: $versionFile.canonicalPath")
+    }
+    Properties versionProps = new Properties()
+    versionFile.withInputStream { stream -> versionProps.load(stream) }
+    new Version(Boolean.parseBoolean(versionProps.playground), Integer.parseInt(versionProps.major), Integer.parseInt(versionProps.minor), Boolean.parseBoolean(versionProps.release))
+}
+
+ext {
+    versionFile = file('version.properties');
+    versionClass = loadVersionFile();
+}
+
+task printVersionClass {
+    group = 'versioning'
+} << {
+    println versionClass
+}
+
+//There's a lot going on in task inputs and outputs
+task makeReleaseVersion {
+    group = 'versioning'
+    //Check if the release property in version.properties is the same as in the previous run
+    inputs.property('release', versionClass.release)
+    //Check if the versionFile is the same as in the previous run
+    outputs.file versionFile
+} << {
+    //versionClass.release = true
+    ant.propertyfile(file: versionFile) {
+        entry(key: 'release', type: 'string', operation: '=', value: 'true')
+    }
+}
+
+task postReleaseTask {
+    group = 'versioning'
+    dependsOn makeReleaseVersion
+} << {
+    println versionClass.release
+}
+
+class ReleaseVersionTask extends DefaultTask {
+    @Input
+    Boolean release
+    @OutputFile
+    File destFile
+
+    ReleaseVersionTask() {
+        group = 'broken'
+        description = 'Custom task to make a release version'
+    }
+
+    @TaskAction
+    void start() {
+        project.versionClass.release = true
+        ant.propertyfile(file: destFile) {
+            entry(key: 'release', type: 'string', operation: '=', value: 'true')
+        }
+    }
+}
+
+task makeReleaseVersionCustomTask(type: ReleaseVersionTask) {
+    release = versionClass.release
+    destFile = versionFile
+} << {
+    println versionClass
+}
+
+task zipTest(type: Zip) {
+    baseName = "src"
+    destinationDir = buildDir
+    from('src') {
+        into 'src'
+    }
+
+    from(rootDir) {
+        include versionFile.name
+    }
+}
+
+//Copy zip file into build directory
+task backupZipTest(type: Copy) {
+    //Dependent task zipTest is automatically ran
+    //Where does the zipTest/Zip task define it's outputs
+    from zipTest.outputs.files
+    //Default buildDir is /build
+    into "$buildDir/backup"
+}
+
+
+tasks.addRule("Pattern: increment<Classifier>Version - Increments the project version classifier.") {
+    String taskName ->
+        if (taskName.startsWith('increment') && taskName.endsWith('Version')) {
+            String oldVersion = versionClass.toString();
+            task(taskName) << {
+                String classifier = (taskName - 'increment' - 'Version').toLowerCase()
+                switch (classifier) {
+                    case 'major':
+                        ++versionClass.major
+                        break
+                    case 'minor':
+                        ++versionClass.minor
+                        break
+                    default:
+                        throw new GradleException("Invalid version type $classifier. Allowed types: ['Major', 'Minor'] ")
+                }
+                String newVersion = versionClass.toString();
+                ant.propertyfile(file: versionFile) {
+                    //using any's synatx to increment major/minor version
+                    entry(key: classifier, type: 'int', operation: '+', value: 1);
+                }
+                logger.info "Incrementing $classifier project version: $oldVersion -> $newVersion"
+            }
+        }
+}
