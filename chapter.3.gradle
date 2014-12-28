@@ -1,0 +1,27 @@
+apply plugin: 'java'
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'Main'
+    }
+}
+
+/*
+ * At this stage the book doesn't go into the details of what a sourceSet actually is.
+ * But a sourceSet is a entirely new concept introduced by the java plugin
+ */
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src']
+        }
+    }
+    test {
+        java {
+            srcDirs = ['test']
+        }
+    }
+}
+
+buildDir = 'out'
+
