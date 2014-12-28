@@ -1,3 +1,7 @@
+import chapter.four.ReleaseVersionListener
+import chapter.four.ReleaseVersionTask
+import chapter.four.Version
+
 task printInstances {
     description "Attempt to find out what the class instance Gradle DSL entities actually map to"
 } << {
@@ -79,27 +83,6 @@ task finalizationTest {
     finalizedBy second
 }
 
-class Version {
-    int major, minor
-    boolean playground, release
-
-    Version(boolean playground, int major, int minor, boolean release) {
-        this.playground = playground
-        this.major = major
-        this.minor = minor
-        this.release = release
-    }
-
-    Version(int major, int minor) {
-        this(false, major, minor, false)
-    }
-
-    @Override
-    String toString() {
-        "${playground ? 'Playground' : ''} $major.$minor${release ? '' : '-SNAPSHOT'}"
-    }
-}
-
 //Read version.properties file
 Version loadVersionFile() {
     logger.quiet 'Reading the version file.'
@@ -125,12 +108,13 @@ task printVersionClass {
 //There's a lot going on in task inputs and outputs
 task makeReleaseVersion {
     group = 'versioning'
+    description 'Standard task to create release version, checking if a version.properties.release has changed and the version.properties file has changed'
     //Check if the release property in version.properties is the same as in the previous run
     inputs.property('release', versionClass.release)
     //Check if the versionFile is the same as in the previous run
     outputs.file versionFile
 } << {
-    //versionClass.release = true
+    versionClass.release = true
     ant.propertyfile(file: versionFile) {
         entry(key: 'release', type: 'string', operation: '=', value: 'true')
     }
@@ -141,26 +125,6 @@ task postReleaseTask {
     dependsOn makeReleaseVersion
 } << {
     println versionClass.release
-}
-
-class ReleaseVersionTask extends DefaultTask {
-    @Input
-    Boolean release
-    @OutputFile
-    File destFile
-
-    ReleaseVersionTask() {
-        group = 'broken'
-        description = 'Custom task to make a release version'
-    }
-
-    @TaskAction
-    void start() {
-        project.versionClass.release = true
-        ant.propertyfile(file: destFile) {
-            entry(key: 'release', type: 'string', operation: '=', value: 'true')
-        }
-    }
 }
 
 task makeReleaseVersionCustomTask(type: ReleaseVersionTask) {
