@@ -1,0 +1,14 @@
+/*
+ * There seems to be some problem with using 'version' during the configuration phase...no idea report to gradle team?
+ */
+
+ext {
+    //So this is broken
+    version = "Not working"
+    myVersion = "Working"
+}
+
+task version << {
+    println project.version
+    println project.myVersion
+}
