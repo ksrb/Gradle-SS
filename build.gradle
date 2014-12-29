@@ -181,3 +181,39 @@ tasks.addRule("Pattern: increment<Classifier>Version - Increments the project ve
             }
         }
 }
+
+task release(dependsOn: [makeReleaseVersionCustomTask, backupZipTest]) {
+    description = 'Create release updating version.properties and creating zip of src and backup'
+    group = 'versioning'
+}
+
+task releaseUsingExecutionGraphClosure(dependsOn: backupZipTest) {
+    description = 'Use Closure to listen to task execution graph creation'
+    group = 'versioning'
+}
+
+task descriptionTest(description: "Set in constructor") {
+    description 'Setter using space'
+    description = 'Setter using ='
+    setDescription('Setter using classic method')
+}
+
+gradle.taskGraph.whenReady {
+    TaskExecutionGraph taskGraph ->
+        if (taskGraph.hasTask(releaseUsingExecutionGraphClosure)) {
+            //if not a release version
+            if (!versionClass.release) {
+                versionClass.release = true;
+                ant.propertyfile(file: versionFile) {
+                    entry(key: 'release', type: 'string', operation: '=', value: 'true')
+                }
+            }
+        }
+}
+
+task releaseUsingExecutionGraphListener(dependsOn: backupZipTest) {
+    description = 'Use Listener to listen to task execution graph creation'
+    group = 'versioning'
+}
+
+gradle.taskGraph.addTaskExecutionGraphListener(new ReleaseVersionListener())
