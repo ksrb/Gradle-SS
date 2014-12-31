@@ -11,49 +11,33 @@ task printInstances {
 
 //Defines additional properties on the project instance (which is pretty much the 'this')
 ext {
-    hiThere = "Hi there"
-    myVersion = "Playground ext{}"
-    version = "Playground ext{}"
+    hiThere = 'Hi there'
+    myVersion = 'Playground ext{}'
+    version = 'Playground ext{}'
 }
 
 task displayExtProperties {
     description "Displays user defined properties"
 } << {
-    println "hiThere $project.hiThere"
-    println "myVersion $project.myVersion"
-    //Not sure why this isn't defined perhaps it's reserved somehow?
+    println "hiThere: $project.hiThere"
+    println "myVersion: $project.myVersion"
     println "version: $project.version"
 }
 
-//Define version variable on Groovy scope?
 def version = "Playground"
-/*
- * There is a difference between defining a 'Gradle' property
- * using 'project.ext'/'ext{}' and defining a variable using 'def'
- */
 
-//Suddenly naming this task as 'version' no longer works
 task printVersionTest {
     group "Questionable"
     description "Print version"
 } << {
     println version
-    //Not sure why this isn't working
     println project.version
-    //But this is, is 'version' overridden or reserved somehow
-    println project.myVersion
 }
 
 task loggerTest {
-    group "Broken"
+    group "versioning"
 } << {
-    //Doesn't work book uses Gradle 1.7 with Groovy 1.8.6
-    //I'm on Gradle 2.2.1 with Groovy 2.3.6, could be a small versioning error
-    /*
-     * To be quite frank the error doesn't make much sense it's saying the quite
-     * method doesn't accept a String and then says that the variable passed to the method is a string -_-
-     */
-    logger.quite version
+    logger.quiet version
 }
 
 
