@@ -2,6 +2,33 @@ import chapter.four.ReleaseVersionListener
 import chapter.four.ReleaseVersionTask
 import chapter.four.Version
 
+/**
+ * <h4>4.1</h4>
+ * Summary of {@link Project} and {@link Task} and Properties.
+ * <p>
+ * Interesting was the use of the gradle.properties file which is automatically read into build script. A
+ * gradle.properties file can also be defined in the <USER_HOME>/.gradle directory which will be automatically read
+ * into <strong>every</strong> build script.
+ * <h4>4.2</h4>
+ * Overview of task creation
+ * <ul>
+ *     <li>Using Groovy classes to encapsulate various project properties
+ *     <li>Task rule creation
+ *     <li>Extending the {@link DefaultTask} to create enhanced tasks/task types to further increase encapsulation
+ *     <li>Moving tasks types
+ *     <li>Using Gradle's built in task types {@link Copy} and {@link Zip}
+ * </ul>
+ * <h4>4.3.</h4>
+ * Overview of listening to Gradle's build life cycle specifically focusing task graph creation attached a listener via:
+ * <ul>
+ *     <li>A {@link Closure} using {@link TaskExecutionGraph#whenReady(groovy.lang.Closure)}
+ *     <li>A {@link TaskExecutionGraphListener} using {@link TaskExecutionGraph#addTaskExecutionGraphListener(org.gradle.api.execution.TaskExecutionGraphListener)}
+ * </ul>
+ */
+private void Summary() {}
+
+version = 'Playground project instance'
+
 task printInstances {
     description "Attempt to find out what the class instance Gradle DSL entities actually map to"
 } << {
