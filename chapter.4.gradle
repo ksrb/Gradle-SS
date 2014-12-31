@@ -81,9 +81,9 @@ task second << {
 }
 
 /*
- * Dependent task have to be defined before hand
- * Unless I'm doing it incorrectly getting Gradle to build in parallel doesn't seem to work in this test
- * Rather 'first' always executes before 'second', it seems that be defaults to running task in alphabetical order
+ * Dependent task have to be defined before hand Unless I'm doing it incorrectly getting Gradle to build in parallel
+ * doesn't seem to work in this test Rather 'first' always executes before 'second', it seems that be defaults to running
+  * task in alphabetical order
  */
 task parallelTest {
     group "Questionable"
