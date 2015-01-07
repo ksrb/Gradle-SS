@@ -1,15 +1,48 @@
 ##Gradle Scratch Space
-[Gradle in Action](http://www.manning.com/muschko/)
 
-####Eclipse
-* Cannot find references (**F3**) for Gradle build files
+###Books
+* [Gradle in Action](http://www.manning.com/muschko/)
 
-####Intellij
-* Can find references (***F3***) but needs some help the respective Gradle and Groovy sources have to provided
-* It also interesting to note the the size of the library doesn't seem to affect the performance of Intellij, as in exclusively adding in the Gradle core located in gradle/src/core or the Groovy core located in groovy/src/src/main vs adding in the root folder (gradle/groovy) or the src folder (gradle/src or groovy/src), Intellij simply scans and finds the sources
-* Is able to find Gradle's buildSrc as long as it's included as a module, however it seems to have some issues with groovy source as it marks all the classes as already existing
-    
-####Gradle
+###Eclipse
+* Cannot find references (<b>F3</b>) for Gradle build files
+
+###Intellij
+Can find references (<b>F3</b>) but needs the respective Gradle and Groovy sources to configure follow these steps in Intellij:
+
+<ol> 
+<li><b>Ctrl+Alt+Shift+S</b></li>
+<li>On the sidebar click <b>Global Libraries</b></li>
+<li>Click <b>+ &rarr; Library</b></li>
+<li>Navigate to Gradle sources add
+	<ul>
+	<li><b>[gradleDir]</b>/lib/*.jar's but exclude groovy-all-*.jar</li>
+	<li><b>[gradleDir]</b>/lib/plugins/*.jar's</li>
+	<li><b>[gradleDir]</b>/src/</li>
+	<li><b>[gradleDir]</b>/src/docs/javadoc</li>
+	</ul>
+</li>
+<li>Name the lib gradle-[version] and press <b>Okay</b>
+<li>Navigate to Groovy source add
+	<ul>
+	<li><b>[groovyDir]</b>/lib</li>
+	<li><b>[groovyDir]</b>/src/src/main</li>
+	<li><b>[groovyDir]</b>/doc/html/api</li>
+	</ul>
+</li>
+</ol>
+So after some experimentation in Intellij it seems that as long as you create a new project via <b>New Project &rarr; Gradle</b> with these Global Libraries available Intellij will automatically be able to find references.
+
+Meaning it is unnecessary to have your project use these libraries as dependencies via <b>Ctrl+Alt+Shift+S &rarr; Modules &rarr; Libraries</b>
+
+####buildSrc
+As long as you create a using <b>New Project &rarr; Gradle</b> the code in the buildSrc can automatically be referenced standard directory structure should probably be followed buildSrc/main/groovy/[your code]
+
+Some cleanup of Intellij default Gradle project settings may be necessary:
+
+* Removing the JUnit libs
+* Changing <b>Project language level</b>
+
+###Gradle
 
     task 'myTask' {} //is the same as
     Project.task('myTask', {}) // this
@@ -20,7 +53,3 @@ However Gradle uses [AST transformations](http://groovy.codehaus.org/Compile-tim
     Project.task('myTask', {}) //the same as the above
     
 See the stackoverflow post [here](http://stackoverflow.com/questions/27584463/understing-the-groovy-syntax-in-a-gradle-task-definition/27584555) for more information
-    
-    
-####Todo
-* Push IDEA and Eclipse settings
