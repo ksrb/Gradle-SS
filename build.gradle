@@ -1,0 +1,18 @@
+import chapter.eight.ApiAuthenticator
+import chapter.eight.MockCloudBeesAuthenticator
+
+task cloudBeeAppInfo() {
+    description = 'Get Cloud bees information'
+    group = 'CloudBees'
+} << {
+    ApiAuthenticator client = new MockCloudBeesAuthenticator(
+            [
+                    url    : 'www.cloudbees.com',
+                    key    : 'myKey',
+                    secret : 'mySecret',
+                    version: 1.0,
+                    format : 'xml'
+            ]
+    )
+    client.applicationInfo().each { k, v -> println "$k = $v" }
+}
