@@ -1,7 +1,12 @@
 package chapter.eight;
 
-public class MockCloudBeesAuthenticator implements ApiAuthenticator {
-    private String url, key, secret, version, format;
+public class CloudBees implements PlatformAsAService {
+    private String appId, url, key, secret, version, format;
+
+    @Override
+    void setAppId(String appId) {
+        this.appId = appId
+    }
 
     @Override
     void setURL(String url) {
@@ -23,7 +28,8 @@ public class MockCloudBeesAuthenticator implements ApiAuthenticator {
         this.format = format
     }
 
-    def applicationInfo(String appId) throws Exception {
+    @Override
+    Map<String, String> applicationInfo(String appId) {
         [
                 url    : url,
                 key    : key,
@@ -32,5 +38,11 @@ public class MockCloudBeesAuthenticator implements ApiAuthenticator {
 
         ]
     }
+
+    @Override
+    void applicationDeployWar(String appId) {
+
+    }
+
 
 }
