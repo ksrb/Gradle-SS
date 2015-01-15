@@ -22,6 +22,18 @@ task cloudBeesAppInfo() {
 task cloudBeesDeployWar() {
     description = 'Deploy application to CloudBees'
     group = 'CloudBees'
+} << {
+    PlatformAsAService client = new CloudBees(
+            [
+                    appId  : appId,
+                    url    : 'www.cloudbees.com',
+                    key    : key,
+                    secret : secret,
+                    version: 1.0,
+                    format : 'xml'
+            ]
+    )
+    client.applicationDeployWar()
 }
 
 

@@ -41,7 +41,7 @@ public class CloudBees implements PlatformAsAService {
 
     @Override
     void applicationDeployWar(String appId) {
-
+        println 'War Deployed on cloudBees'
     }
 
 
