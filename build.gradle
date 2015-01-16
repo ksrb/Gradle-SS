@@ -1,6 +1,7 @@
-import chapter.eight.CloudBees
 import chapter.eight.CloudBeesInfoTask
-import chapter.eight.PlatformAsAService
+import chapter.eight.CloudBeesInfoTaskUsingSuper
+import chapter.eight.mock.CloudBees
+import chapter.eight.mock.PlatformAsAService
 
 task cloudBeesAppInfo() {
     description = 'Get CloudBees App information'
@@ -8,15 +9,14 @@ task cloudBeesAppInfo() {
 } << {
     PlatformAsAService client = new CloudBees(
             [
-                    appId  : appId,
-                    url    : 'www.cloudbees.com',
                     key    : key,
                     secret : secret,
+                    url    : 'www.cloudbees.com',
                     version: 1.0,
                     format : 'xml'
             ]
     )
-    client.applicationInfo().each { k, v -> println "$k = $v" }
+    client.applicationInfo(appId).each { k, v -> println "$k = $v" }
 }
 
 task cloudBeesDeployWar() {
@@ -25,24 +25,26 @@ task cloudBeesDeployWar() {
 } << {
     PlatformAsAService client = new CloudBees(
             [
-                    appId  : appId,
-                    url    : 'www.cloudbees.com',
                     key    : key,
                     secret : secret,
+                    url    : 'www.cloudbees.com',
                     version: 1.0,
                     format : 'xml'
             ]
     )
-    client.applicationDeployWar()
+    client.applicationDeployWar(appId)
 }
 
 
 task cloudBeesAppInfoCustomTask(type: CloudBeesInfoTask) {
     appId = project.appId
-    url = 'www.cloudbees.com'
     key = project.key
     secret = project.secret
-    version = 1.0
-    format = 'xml'
+}
+
+task cloudBeesAppInfoCustomTaskUsingSuper(type: CloudBeesInfoTaskUsingSuper) {
+    appId = project.appId
+    key = project.key
+    secret = project.secret
 }
 

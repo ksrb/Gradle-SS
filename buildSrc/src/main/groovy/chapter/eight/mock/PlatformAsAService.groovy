@@ -1,15 +1,16 @@
-package chapter.eight;
+package chapter.eight.mock;
 
 public interface PlatformAsAService {
-    void setAppId(String appId)
 
     void setURL(String url)
 
     void setKey(String key)
 
-    void setVersion(String version)
+    void setSecret(String secret)
 
-    void apiFormat(String format)
+    void setVersion(int version)
+
+    void setFormat(String format)
 
     Map<String, String> applicationInfo(String appId)
 

@@ -1,12 +1,11 @@
-package chapter.eight;
+package chapter.eight.mock;
 
 public class CloudBees implements PlatformAsAService {
-    private String appId, url, key, secret, version, format;
-
-    @Override
-    void setAppId(String appId) {
-        this.appId = appId
-    }
+    private String key
+    private String secret
+    private String url
+    private int version
+    private String format
 
     @Override
     void setURL(String url) {
@@ -19,20 +18,27 @@ public class CloudBees implements PlatformAsAService {
     }
 
     @Override
-    void setVersion(String version) {
+    void setSecret(String secret) {
+        this.secret = secret
+    }
+
+    @Override
+    void setVersion(int version) {
         this.version = version
     }
 
     @Override
-    void apiFormat(String format) {
+    void setFormat(String format) {
         this.format = format
     }
 
     @Override
     Map<String, String> applicationInfo(String appId) {
         [
-                url    : url,
+                appId  : appId,
                 key    : key,
+                url    : url,
+                secret : secret,
                 version: version,
                 format : format
 
@@ -41,7 +47,7 @@ public class CloudBees implements PlatformAsAService {
 
     @Override
     void applicationDeployWar(String appId) {
-        println 'War Deployed on cloudBees'
+        println "$appId deployed on cloudBees as a WAR"
     }
 
 

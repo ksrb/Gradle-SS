@@ -1,13 +1,32 @@
-package chapter.eight;
+package chapter.eight
 
+import chapter.eight.mock.CloudBees
+import chapter.eight.mock.PlatformAsAService;
 import org.gradle.api.DefaultTask;
 import org.gradle.api.tasks.Input;
 import org.gradle.api.tasks.TaskAction;
 
+/**
+ * Custom task to print out CloudBees application info
+ */
 class CloudBeesInfoTask extends DefaultTask {
 
+    //Passed in by consuming {@link Task}
     @Input
-    String appId, url, key, secret, version, format
+    String appId
+    @Input
+    String key
+    @Input
+    String secret
+
+    //Defaults
+    @Input
+    String url = 'www.cloudbees.com'
+    @Input
+    int version = 1.0
+    @Input
+    String format = 'xml'
+
 
     CloudBeesInfoTask() {
         description = 'Get CloudBees App information using custom task'
@@ -18,7 +37,6 @@ class CloudBeesInfoTask extends DefaultTask {
     void start() {
         PlatformAsAService client = new CloudBees(
                 [
-                        appId  : appId,
                         url    : url,
                         key    : key,
                         secret : secret,
@@ -26,6 +44,6 @@ class CloudBeesInfoTask extends DefaultTask {
                         format : format
                 ]
         )
-        client.applicationInfo().each { k, v -> println "$k = $v" }
+        client.applicationInfo(appId).each { k, v -> println "$k = $v" }
     }
 }
