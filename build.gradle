@@ -1,7 +1,18 @@
-import chapter.eight.CloudBeesInfoTask
-import chapter.eight.CloudBeesInfoTaskUsingSuper
+import chapter.eight.CloudBeesAppInfoTask
+import chapter.eight.CloudBeesAppInfoTaskException
+import chapter.eight.CloudBeesAppInfoTaskUsingSuper
+import chapter.eight.CloudBeesDeployWar
+import chapter.eight.CloudBeesPlugin
 import chapter.eight.mock.CloudBees
 import chapter.eight.mock.PlatformAsAService
+
+apply plugin: 'cloudBees'
+
+cloudBees {
+    appId = 'myAppId'
+    secret = 'mySecret'
+    key = 'myKey'
+}
 
 task cloudBeesAppInfo() {
     description = 'Get CloudBees App information'
@@ -35,14 +46,26 @@ task cloudBeesDeployWar() {
     client.applicationDeployWar(appId)
 }
 
-
-task cloudBeesAppInfoCustomTask(type: CloudBeesInfoTask) {
+task cloudBeesDeployWarWithSuper(type: CloudBeesDeployWar) {
     appId = project.appId
     key = project.key
     secret = project.secret
 }
 
-task cloudBeesAppInfoCustomTaskUsingSuper(type: CloudBeesInfoTaskUsingSuper) {
+
+task cloudBeesAppInfoCustomTask(type: CloudBeesAppInfoTask) {
+    appId = project.appId
+    key = project.key
+    secret = project.secret
+}
+
+task cloudBeesAppInfoCustomTaskUsingSuper(type: CloudBeesAppInfoTaskUsingSuper) {
+    appId = project.appId
+    key = project.key
+    secret = project.secret
+}
+
+task cloudBeesAppInfoCustomTaskWithException(type: CloudBeesAppInfoTaskException) {
     appId = project.appId
     key = project.key
     secret = project.secret

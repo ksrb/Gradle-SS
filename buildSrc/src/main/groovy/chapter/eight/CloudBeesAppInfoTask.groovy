@@ -9,7 +9,7 @@ import org.gradle.api.tasks.TaskAction;
 /**
  * Custom task to print out CloudBees application info
  */
-class CloudBeesInfoTask extends DefaultTask {
+class CloudBeesAppInfoTask extends DefaultTask {
 
     //Passed in by consuming {@link Task}
     @Input
@@ -28,7 +28,7 @@ class CloudBeesInfoTask extends DefaultTask {
     String format = 'xml'
 
 
-    CloudBeesInfoTask() {
+    CloudBeesAppInfoTask() {
         description = 'Get CloudBees App information using custom task'
         group = 'CloudBees'
     }

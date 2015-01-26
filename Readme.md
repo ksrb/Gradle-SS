@@ -3,10 +3,12 @@
 ###Books
 * [Gradle in Action](http://www.manning.com/muschko/)
 
-###Eclipse
+###Workspace
+
+####Eclipse
 * Cannot find references (<b>F3</b>) for Gradle build files
 
-###Intellij
+####Intellij
 Can find references (<b>F3</b>) but needs the respective Gradle and Groovy sources to configure follow these steps in Intellij:
 
 <ol> 
@@ -34,7 +36,7 @@ So after some experimentation in Intellij it seems that as long as you create a 
 
 Meaning it is unnecessary to have your project use these libraries as dependencies via <b>Ctrl+Alt+Shift+S &rarr; Modules &rarr; Libraries</b>
 
-####buildSrc
+#####buildSrc
 As long as you create a using <b>New Project &rarr; Gradle</b> the code in the buildSrc can automatically be referenced standard directory structure should probably be followed buildSrc/main/groovy/[your code]
 
 Some cleanup of Intellij default Gradle project settings may be necessary:

@@ -6,17 +6,17 @@ import org.gradle.api.tasks.Input
 /**
  * Custom task to print out CloudBees application info
  */
-class CloudBeesInfoTaskUsingSuper extends CloudBeesTask {
+class CloudBeesAppInfoTaskUsingSuper extends CloudBeesTask {
 
     @Input
     String appId
 
-    CloudBeesInfoTaskUsingSuper() {
+    CloudBeesAppInfoTaskUsingSuper() {
         super("Get CloudBees App information using custom task")
     }
 
     @Override
     void executeAction(PlatformAsAService paas) {
-        paas.applicationInfo(appId).each { k, v -> println "$k = $v" }
+        paas.applicationInfo(getAppId()).each { k, v -> println "$k = $v" }
     }
 }
