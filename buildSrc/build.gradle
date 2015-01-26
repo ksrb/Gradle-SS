@@ -1,0 +1,23 @@
+apply plugin: 'groovy'
+apply plugin: 'maven'
+
+archivesBaseName = 'cloudbees-plugin'
+group = 'chapter.eight'
+version = '1.0'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile localGroovy()
+    compile gradleApi()
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: "file://$projectDir/../repo");
+        }
+    }
+}

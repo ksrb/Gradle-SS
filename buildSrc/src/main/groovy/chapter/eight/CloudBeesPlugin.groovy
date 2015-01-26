@@ -3,10 +3,6 @@ package chapter.eight
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
-
-/**
- * Created by Kevin Suen on 1/20/2015.
- */
 class CloudBeesPlugin implements Plugin<Project> {
     static final String EXTENSION_NAME = 'cloudBees'
 

@@ -1,8 +1,16 @@
+buildscript {
+    repositories {
+        maven { url "file://$projectDir/repo" }
+    }
+    dependencies {
+        classpath 'chapter.eight:cloudbees-plugin:1.0'
+    }
+}
+
 import chapter.eight.CloudBeesAppInfoTask
 import chapter.eight.CloudBeesAppInfoTaskException
 import chapter.eight.CloudBeesAppInfoTaskUsingSuper
 import chapter.eight.CloudBeesDeployWar
-import chapter.eight.CloudBeesPlugin
 import chapter.eight.mock.CloudBees
 import chapter.eight.mock.PlatformAsAService
 
